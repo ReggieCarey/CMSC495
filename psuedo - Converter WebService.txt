@@ -1,0 +1,58 @@
+Class CurrencyConversionLogic{
+		double conversionRate
+		list currencycodes
+		
+		double getRate(from, to)
+		{
+			this.conversionRate = dbService.getRate(from) / dbService.getRate(to)
+		}
+		
+		
+		
+		
+		double convert(from, to, amount){
+			Call this.getRate(from, to)
+			
+			return amount * conversionRate
+		}		
+}
+
+
+Class ExchangeRateWebService
+		string webURL
+		
+		list getCurrencyCodes()
+		{
+			try
+			{
+				get currencyRateXML from webURL for all currencies
+			}
+			catch (connection error, web service error, file error)
+			{
+				unable to update db
+				exit
+			}
+			
+			stream currencyRateXML
+			
+			codelist = SAXParse xml for all currency codes;
+			return codeList
+		}
+		
+		list getRate(currencyCode)
+		{
+			try
+			{
+				get currencyRateXML from web for single code
+			}
+			catch (connection error, webURL service error, file error)
+			{
+				unable to access webservice
+				exit
+			}
+			
+			SAXparse xml for rate
+			return rate
+		}
+}
+		
