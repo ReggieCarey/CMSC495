@@ -1,0 +1,26 @@
+Public Class CurrencyCode {
+	private final String code
+	private final String name
+	private Boolean smallestDenomination
+	
+	public CurrencyCode(String code, String name, Boolean sDen) {
+	
+		this.code = code
+		this.name = name
+		this.smallestDenomination = sDen 
+	}
+	
+	public String getCode() {
+		return code
+	}
+	
+	public String getCurrencyName() {
+		return name
+	}
+	
+	public Boolean isSmallestDenomination() {
+		return smallestDenomination
+	}
+
+
+}
