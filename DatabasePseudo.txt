@@ -37,7 +37,7 @@ getRate(CurrencyCode) Double {
 	
 	Double currentRate = null;
 	
-	SELECT conversion FROM Rates WHERE this.CurrencyCode = CurrencyCode {
+	conn.preparedStatement(SELECT conversion FROM Rates WHERE this.CurrencyCode = CurrencyCode) {
 		currentRate = results.getDouble("conversionRate");
 	}
 }
@@ -47,7 +47,7 @@ getUpdateTime(CurrenyCode) String {
 	
 	String updateTime = null;
 	
-	SELECT time FROM rates WHERE this.CurrencyCode = currencyCode{
+	conn.preparedStatement(SELECT time FROM rates WHERE this.CurrencyCode = currencyCode) {
 		updateTime = results.getString("time");
 	}
 }
