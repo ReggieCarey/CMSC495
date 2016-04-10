@@ -1,0 +1,53 @@
+conection getConnection (
+	try {
+		Open Database connection
+	}
+	return connection;
+)
+
+updateRates {
+
+	Connection conn getConnection;
+	
+	
+	SQL drop table Rates
+	SQL create table Rates{
+		pk currencyCode
+		col conversionRate
+		col time
+	}
+	SQL INSERT INTO RATES {
+		parse through webservice.getAllRates(List) and insert into database		
+	}
+}
+
+getCurrencyCodes() List:CurrencyCodes {
+	Connection conn getConnection;
+	List<CurrencyCodes> = new List;
+	
+	conn.preparedStatement(Select CurrencyCode FROM Rates) {
+		add each parsed database code into List<CurrencyCodes>
+	}
+	
+	Return List<CurrencyCodes>;
+}
+
+getRate(CurrencyCode) Double {
+	Connection conn getConnection;
+	
+	Double currentRate = null;
+	
+	SELECT conversion FROM Rates WHERE this.CurrencyCode = CurrencyCode {
+		currentRate = results.getDouble("conversionRate");
+	}
+}
+
+getUpdateTime(CurrenyCode) String {
+	Connection conn getConnection;
+	
+	String updateTime = null;
+	
+	SELECT time FROM rates WHERE this.CurrencyCode = currencyCode{
+		updateTime = results.getString("time");
+	}
+}
