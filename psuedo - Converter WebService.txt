@@ -39,7 +39,7 @@ Class ExchangeRateWebService
 			return codeList
 		}
 		
-		list getRate(currencyCode)
+		list getSingleRate(currencyCode)
 		{
 			try
 			{
@@ -53,6 +53,22 @@ Class ExchangeRateWebService
 			
 			SAXparse xml for rate
 			return rate
+		}
+		
+		list getAllRates()
+		{
+			try
+			{
+				get currencyRateXML from web for all currencies
+			}
+			catch (connection error, webURL service error, file error)
+			{
+				unable to access webservice
+				exit
+			}
+			
+			SAXparse xml for rateList
+			return rateList
 		}
 }
 		
