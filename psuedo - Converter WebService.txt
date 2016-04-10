@@ -7,9 +7,6 @@ Class CurrencyConversionLogic{
 			this.conversionRate = dbService.getRate(from) / dbService.getRate(to)
 		}
 		
-		
-		
-		
 		double convert(from, to, amount){
 			Call this.getRate(from, to)
 			
@@ -39,24 +36,12 @@ Class ExchangeRateWebService
 			return codeList
 		}
 		
-		list getSingleRate(currencyCode)
-		{
-			try
-			{
-				get currencyRateXML from web for single code
-			}
-			catch (connection error, webURL service error, file error)
-			{
-				unable to access webservice
-				exit
-			}
-			
-			SAXparse xml for rate
-			return rate
-		}
+
 		
-		list getAllRates()
+		list getRates()
 		{
+			Stream currencyRateXML
+			
 			try
 			{
 				get currencyRateXML from web for all currencies
@@ -64,7 +49,7 @@ Class ExchangeRateWebService
 			catch (connection error, webURL service error, file error)
 			{
 				unable to access webservice
-				exit
+				return empty list
 			}
 			
 			SAXparse xml for rateList
