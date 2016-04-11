@@ -1,0 +1,49 @@
+Public Class GUI {
+
+	public GUI() {
+	
+	}
+	
+	public void init() {
+	
+	}
+	
+	public void initComponents() {
+	
+		selectListFrom = new selection list component
+		selectListTo = new selection list component
+		inputFieldAmt = new input field component
+		outputFieldRate = new output field component
+		Add components to frame
+	
+	}
+	
+	public static void main(String [] args) {
+		private int indexFrom
+		private int indexTo
+		private double amount
+		private double rate = 0
+		private double convAmount
+		public CurrencyConversionLogic cclObj = new CurrencyConversionLogic
+
+		keyUpCheck = key up event
+		changeSelectListFrom = change event for from currency selection list
+		changeSelectListTo = change event for to currency selection list
+		if (changeSelectListFrom and changeSelectListTo) {
+			indexFrom = selectListFrom.getSelectedIndex
+			indexTo = selectListTo.getSelectedIndex
+			if (indexFrom > 0 and indexTo > 0) {
+				rate = cclObj.getRates(selectListFrom.selectedValue, selectListTo.selectedValue)
+			}
+		}
+		
+		if (keyUpCheck) {
+			if (rate > 0) {
+				outputFieldRate.value = rate
+			}
+		}
+	
+	}
+
+}
+
