@@ -106,6 +106,7 @@ public class ExchangeRateDB {
             }
         }
         
+        //Closing the connection to the database.
         try {
             if(!conn.isClosed())
             conn.close();
@@ -145,6 +146,9 @@ public class ExchangeRateDB {
         return codes;
     }
     
+    /*
+        Getter that returns a rate based upon a currency code provided.
+    */
     public Double getRate(String code) {
         Connection conn = getConnection();
         Double rate = null;
@@ -172,6 +176,10 @@ public class ExchangeRateDB {
         return rate;
     }
     
+    /*
+        Getter that returns the last time the code was updated based upong
+        a code provided.
+    */
     public String getUpdatedTime(String code) {
         Connection conn = getConnection();
         String updatedTime = new String();
