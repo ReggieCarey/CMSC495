@@ -1,62 +1,59 @@
-
-import java.util.Arrays;
-import java.util.List;
-
-
-
 /*
- * Class: Currency
- * 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
+package exchangecurrency;
+
+import java.util.Date;
 
 
+/**
+    University of Maryland: University College
+    CMSC495 Group 2
+    Class      : ExchangeCurrencyDB
+    Created on : Apr 23, 2016
+    Author     : Brandon Trexler
+
+ */
 public class Currency {
-    private String name;
     private String code;
-    private Rate rate;
-    private boolean smallestDenomination = false;
-    private static List noDecimalCodes = Arrays.asList("BIF","DJF","JPY",
-            "KRW","PYG","VND","XAF","XPF","CLP","GNF","KMF","MGA","RWF",
-            "VUV","XOF");
-
-
-    //Constructor for currency
-    public Currency(String name, String code, Rate rate)
-    {
-        this.name=name;
+    private Double rate;
+    private String lastUpdated;
+    
+    //Default constructor
+    public Currency(){
+        
+    }
+    
+    //Real constructor
+    public Currency(String code, Double rate, String lastUpdated) {
         this.code = code;
-        this.rate.setRate(rate);
-        if(noDecimalCodes.contains(code))
-            smallestDenomination=true;
+        this.rate = rate;
+        this.lastUpdated = lastUpdated;
     }
     
-    //Constructor for currency object for rate storage only
-    public Currency(Rate rate)
-    {
+    //Setters
+    public void setCode(String code) {
+        this.code = code;
+    }
+    public void setRate(Double rate) {
         this.rate = rate;
     }
-    
-    //Method to update currency rate given a Rate object
-    public void updateRate(Rate rate)
-    {
-        this.rate = rate;
+    public void setDate(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
     
-    //Method to get currency name
-    public String getName()
-    {
-        return this.name;
-    }
-    
-    //Method to get currency code
-    public String getCode()
-    {
+    //Getters
+    public String getCode() {
         return this.code;
     }
     
-    //Method to get currency Rate
-    public Rate getRate()
-    {
+    public Double getRate() {
         return this.rate;
+    }
+    
+    public String getLastUpdated() {
+        return this.lastUpdated;
     }
 }
