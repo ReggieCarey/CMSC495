@@ -5,7 +5,6 @@
  */
 package exchangecurrency;
 
-import java.util.Date;
 
 
 /**
