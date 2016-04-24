@@ -12,3 +12,5 @@
 hs_err_pid*
 /Exchange/nbproject/private/
 !/Exchange/lib/json-simple-1.1.1.jar
+/Exchange/build/
+/Exchange/dist/
