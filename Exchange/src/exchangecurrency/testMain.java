@@ -2,6 +2,7 @@ package exchangecurrency;
 
 
 import exchangecurrency.ExchangeRateWebService;
+import java.util.List;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -17,7 +18,6 @@ import exchangecurrency.ExchangeRateWebService;
 public class testMain {
     public static void main(String[] args) {
         ExchangeRateWebService webserve = new ExchangeRateWebService();
-        Rate testRate = webserve.getRate("MXN");
-        System.out.println(testRate.getRate());
+        List testRate = webserve.getRate();
     }
 }

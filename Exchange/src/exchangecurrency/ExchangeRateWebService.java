@@ -1,14 +1,13 @@
 package exchangecurrency;
 
-
-
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -31,11 +30,11 @@ public class ExchangeRateWebService {
     
     private static final String baseUrl = "https://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json";
     
-    //Method returns a single exhange rate 
-    public Rate getRate(String symbol)
+
+    public ArrayList<Currency> getRate()
     {
         JSONParser jparse = new JSONParser();
-        Rate returnRate = null;
+        ArrayList<Currency> returnRates = new ArrayList();
         
         try{
             URL openURL = new URL(baseUrl);
@@ -50,11 +49,15 @@ public class ExchangeRateWebService {
             while(i.hasNext())
             {
                 JSONObject j2 = (JSONObject)i.next();
+                JSONObject j3 = (JSONObject)j2.get("resource");
+                JSONObject j4 = (JSONObject)j3.get("fields");
+                String code = ((String)j4.get("symbol")).substring(0, 3);
+                double rate = Double.parseDouble((String) j4.get("price"));
+                returnRates.add(new Currency(code,rate,new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date())));
             }
-            System.out.println("success");
         } catch (IOException | ParseException e) {
             return null;
         }
-        return returnRate;
+        return returnRates;
     }    
 }
