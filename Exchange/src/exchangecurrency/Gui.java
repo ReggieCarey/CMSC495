@@ -5,10 +5,15 @@
  */
 package exchangecurrency;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author ReginaldCarey
  */
-public class Gui {
+public class Gui extends JFrame {
 
+    public Gui() {
+        
+    }
 }
