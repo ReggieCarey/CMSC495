@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Apr 25 00:42:39 EDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): instance a816c00e-0154-4bb9-f6f2-000007063740 
+on database directory C:\Users\Brando\Desktop\School\CMSC495\Github\CMSC495\Exchange\exchangedb with class loader sun.misc.Launcher$AppClassLoader@6bc7c054 
+Loaded from file:/C:/Users/Brando/Desktop/School/CMSC495/Github/CMSC495/Exchange/lib/JAVADB_DRIVER_LABEL/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_31-b13
+user.dir=C:\Users\Brando\Desktop\School\CMSC495\Github\CMSC495\Exchange
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
