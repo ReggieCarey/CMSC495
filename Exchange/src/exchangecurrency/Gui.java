@@ -8,7 +8,6 @@ package exchangecurrency;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -51,27 +50,21 @@ public class Gui extends JFrame {
         sourceCurrencyLabel.setText("Source Currency");
 
         sourceCurrencyComboBox.setModel(new DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        sourceCurrencyComboBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                sourceCurrencyComboBoxActionPerformed(evt);
-            }
+        sourceCurrencyComboBox.addActionListener((ActionEvent evt) -> {
+            sourceCurrencyComboBoxActionPerformed(evt);
         });
 
         targetCurrencyLabel.setText("Target Currency");
 
         targetCurrencyComboBox.setModel(new DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        targetCurrencyComboBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                targetCurrencyComboBoxActionPerformed(evt);
-            }
+        targetCurrencyComboBox.addActionListener((ActionEvent evt) -> {
+            targetCurrencyComboBoxActionPerformed(evt);
         });
 
         sourceAmountLabel.setText("Source Amount");
 
-        sourceAmountInputTextField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                sourceAmountInputTextFieldActionPerformed(evt);
-            }
+        sourceAmountInputTextField.addActionListener((ActionEvent evt) -> {
+            sourceAmountInputTextFieldActionPerformed(evt);
         });
 
         targetAmountLabel.setText("Target Amount");
@@ -181,13 +174,7 @@ public class Gui extends JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
