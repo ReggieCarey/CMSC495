@@ -173,7 +173,7 @@ public class ExchangeRateDB {
         String updatedTime = new String();
 
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT date FROM exchange WHERE code = " + code + "");
+            PreparedStatement ps = conn.prepareStatement("SELECT date FROM exchange WHERE code = '" + code + "'");
             ResultSet results = null;
 
             results = ps.executeQuery();
