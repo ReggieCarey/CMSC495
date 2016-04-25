@@ -58,7 +58,7 @@ public class ExchangeRateDB {
                 
             }
 
-            for(int i = 1; i < currentPull.size(); i++) {
+            for(int i = 0; i < currentPull.size(); i++) {
                 try {
                     PreparedStatement ps = conn.prepareStatement("INSERT INTO exchange"
                             + "(CODE, RATE, DATE) VALUES "
@@ -108,10 +108,10 @@ public class ExchangeRateDB {
     */
     public ArrayList getCurrencyCodes() {
         Connection conn = getConnection();
-        ArrayList codes = null;
+        ArrayList codes = new ArrayList();
 
         try{
-           PreparedStatement ps = conn.prepareStatement("SELECT code FROM exchange" );
+           PreparedStatement ps = conn.prepareStatement("SELECT code FROM exchange");
 
            ResultSet results = null;
            results = ps.executeQuery();
