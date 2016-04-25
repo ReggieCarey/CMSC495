@@ -111,7 +111,7 @@ public class ExchangeRateDB {
         ArrayList codes = null;
 
         try{
-           PreparedStatement ps = conn.prepareStatement("SELECT codes FROM exchange" );
+           PreparedStatement ps = conn.prepareStatement("SELECT code FROM exchange" );
 
            ResultSet results = null;
            results = ps.executeQuery();
@@ -142,7 +142,7 @@ public class ExchangeRateDB {
         Double rate = null;
 
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT rate FROM exchange WHERE code = " + code + "");
+            PreparedStatement ps = conn.prepareStatement("SELECT rate FROM exchange WHERE code = '" + code + "'");
 
             ResultSet results = null;
             results = ps.executeQuery();
