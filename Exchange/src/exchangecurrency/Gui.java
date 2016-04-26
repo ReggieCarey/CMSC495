@@ -8,6 +8,8 @@ package exchangecurrency;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -26,7 +28,10 @@ import javax.swing.WindowConstants;
  */
 public class Gui extends JFrame {
 
-    public Gui() {
+    ExchangeRateDB erdb = new ExchangeRateDB();
+    ExchangeRateWebService erws = new ExchangeRateWebService();
+
+    private Gui() {
         initComponents();
     }
 
@@ -49,14 +54,18 @@ public class Gui extends JFrame {
 
         sourceCurrencyLabel.setText("Source Currency");
 
-        sourceCurrencyComboBox.setModel(new DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        List<String> currencyCodeList = erdb.getCurrencyCodes();
+        Collections.sort(currencyCodeList);
+        String[] currencyCodes = currencyCodeList.toArray(new String[currencyCodeList.size()]);
+
+        sourceCurrencyComboBox.setModel(new DefaultComboBoxModel(currencyCodes));
         sourceCurrencyComboBox.addActionListener((ActionEvent evt) -> {
             sourceCurrencyComboBoxActionPerformed(evt);
         });
 
         targetCurrencyLabel.setText("Target Currency");
 
-        targetCurrencyComboBox.setModel(new DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        targetCurrencyComboBox.setModel(new DefaultComboBoxModel(currencyCodes));
         targetCurrencyComboBox.addActionListener((ActionEvent evt) -> {
             targetCurrencyComboBoxActionPerformed(evt);
         });
@@ -68,7 +77,8 @@ public class Gui extends JFrame {
         });
 
         targetAmountLabel.setText("Target Amount");
-
+        targetAmountOutputTextField.setEditable(false);
+        
         historicalDataOutputPanel.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0)));
 
         GroupLayout historicalDataOutputPanelLayout = new GroupLayout(historicalDataOutputPanel);
@@ -161,7 +171,7 @@ public class Gui extends JFrame {
         // TODO add your handling code here:
     }
 
-    public void startGui() {
+    public static void go() {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -181,7 +191,7 @@ public class Gui extends JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            setVisible(true);
+            new Gui().setVisible(true);
         });
     }
 }

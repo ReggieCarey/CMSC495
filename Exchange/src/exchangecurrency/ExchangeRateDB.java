@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,9 +54,9 @@ public class ExchangeRateDB {
                 conn.createStatement().execute("create table exchange(code VARCHAR(4), rate DOUBLE, date VARCHAR(11))");
                 System.out.println("table created.");
             } catch(Exception e) {
-                
+
                 e.printStackTrace();
-                
+
             }
 
             for(int i = 0; i < currentPull.size(); i++) {
@@ -69,31 +70,31 @@ public class ExchangeRateDB {
                     ps.setDouble(2, tempCurrency.getRate());
                     ps.setString(3, dateFormat.format(currentDate));
                     ps.executeUpdate();
-                    
-                    System.out.println("row add " + tempCurrency.getCode());                    
-                    
+
+                    System.out.println("row add " + tempCurrency.getCode());
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
-        
+
         try {
             PreparedStatement prep = conn.prepareStatement("SELECT * FROM exchange");
             ResultSet res = null;
             int count = 1;
-            
+
             res = prep.executeQuery();
-            
+
             while(res.next()) {
                 System.out.println("from DB: " + res.getString("date"));
             }
         } catch (Exception e) {
-            
+
             e.printStackTrace();
-            
+
         }
-        
+
         //Closing the connection to the database.
         try {
             if(!conn.isClosed())
@@ -106,9 +107,9 @@ public class ExchangeRateDB {
     /*
         Getter that returns an ArrayList of the currency codes.
     */
-    public ArrayList getCurrencyCodes() {
+    public List<String> getCurrencyCodes() {
         Connection conn = getConnection();
-        ArrayList codes = new ArrayList();
+        List<String> codes = new ArrayList<>();
 
         try{
            PreparedStatement ps = conn.prepareStatement("SELECT code FROM exchange");
@@ -206,7 +207,7 @@ public class ExchangeRateDB {
             if (c != null) {
                 System.out.println("Connected to database.");
             }
-            
+
         } catch (ClassNotFoundException e){
 
             System.out.println("Where is your Derby driver?");
@@ -215,7 +216,7 @@ public class ExchangeRateDB {
         } catch (SQLException ex) {
             Logger.getLogger(ExchangeRateDB.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
+
         return c;
     }
 
