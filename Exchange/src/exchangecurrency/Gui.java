@@ -32,8 +32,11 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
- *
- * @author ReginaldCarey
+    University of Maryland: University College
+    CMSC495 Group 2
+    Class      : GUI
+    Created on : May 1, 2016
+    Author     : Reginald Carey
  */
 public class Gui extends JFrame {
 
