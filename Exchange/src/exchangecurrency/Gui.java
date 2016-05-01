@@ -5,26 +5,31 @@
  */
 package exchangecurrency;
 
+import static exchangecurrency.Model.PROP_CURRENCYCODES;
+import static exchangecurrency.Model.PROP_SOURCEAMOUNT;
+import static exchangecurrency.Model.PROP_SOURCECURRENCYCODE;
+import static exchangecurrency.Model.PROP_TARGETAMOUNT;
+import static exchangecurrency.Model.PROP_TARGETCURRENCYCODE;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
+import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -32,260 +37,268 @@ import javax.swing.WindowConstants;
  */
 public class Gui extends JFrame {
 
-    ExchangeRateDB erdb = new ExchangeRateDB();
-    ExchangeRateWebService erws = new ExchangeRateWebService();
-
-    class Model {
-
-        private String sourceCurrencyCode;
-
-        public static final String PROP_SOURCECURRENCYCODE = "sourceCurrencyCode";
-
-        public String getSourceCurrencyCode() {
-            return sourceCurrencyCode;
-        }
-
-        public void setSourceCurrencyCode(String sourceCurrencyCode) {
-            String oldSourceCurrencyCode = this.sourceCurrencyCode;
-            this.sourceCurrencyCode = sourceCurrencyCode;
-            propertyChangeSupport.firePropertyChange(PROP_SOURCECURRENCYCODE, oldSourceCurrencyCode, sourceCurrencyCode);
-        }
-
-        private String targetCurrencyCode;
-
-        public static final String PROP_TARGETCURRENCYCODE = "targetCurrencyCode";
-
-        public String getTargetCurrencyCode() {
-            return targetCurrencyCode;
-        }
-
-        public void setTargetCurrencyCode(String targetCurrencyCode) {
-            String oldTargetCurrencyCode = this.targetCurrencyCode;
-            this.targetCurrencyCode = targetCurrencyCode;
-            propertyChangeSupport.firePropertyChange(PROP_TARGETCURRENCYCODE, oldTargetCurrencyCode, targetCurrencyCode);
-        }
-
-        private Double sourceAmount;
-
-        public static final String PROP_SOURCEAMOUNT = "sourceAmount";
-
-        public Double getSourceAmount() {
-            return sourceAmount;
-        }
-
-        public void setSourceAmount(Double sourceAmount) {
-            Double oldSourceAmount = this.sourceAmount;
-            this.sourceAmount = sourceAmount;
-            propertyChangeSupport.firePropertyChange(PROP_SOURCEAMOUNT, oldSourceAmount, sourceAmount);
-        }
-        private Double targetAmount;
-
-        public static final String PROP_TARGETAMOUNT = "targetAmount";
-
-        public Double getTargetAmount() {
-            return targetAmount;
-        }
-
-        public void setTargetAmount(Double targetAmount) {
-            Double oldTargetAmount = this.targetAmount;
-            this.targetAmount = targetAmount;
-            propertyChangeSupport.firePropertyChange(PROP_TARGETAMOUNT, oldTargetAmount, targetAmount);
-        }
-
-        private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-        public void addPropertyChangeListener(PropertyChangeListener listener) {
-            propertyChangeSupport.addPropertyChangeListener(listener);
-        }
-
-        public void removePropertyChangeListener(PropertyChangeListener listener) {
-            propertyChangeSupport.removePropertyChangeListener(listener);
-        }
-    }
-
-    Model model = new Model();
+    private final Model model = new Model();
 
     private Gui() {
-        model.addPropertyChangeListener((PropertyChangeEvent evt) -> {
-            System.out.println(evt);
-        });
         initComponents();
+
+        model.setSourceAmount(1.0);
+        model.setTargetAmount(1.0);
+        model.setCurrencyCodes(new ExchangeRateDB().getCurrencyCodes());
+    }
+
+    private String getNameForCode(String code) {
+        return code;
     }
 
     private void initComponents() {
+    //<editor-fold defaultstate="collapsed" desc=" Setup the GUI ">
 
         JPanel mainPanel = new JPanel();
-        JLabel sourceCurrencyLabel = new JLabel();
+        JPanel dataEntryPanel = new JPanel();
+        JTextField sourceAmountTextField = new JTextField();
         JComboBox sourceCurrencyComboBox = new JComboBox();
-        JLabel targetCurrencyLabel = new JLabel();
+        JTextField targetAmountTextField = new JTextField();
         JComboBox targetCurrencyComboBox = new JComboBox();
-        JLabel sourceAmountLabel = new JLabel();
-        JTextField sourceAmountInputTextField = new JTextField();
-        JSeparator separator = new JSeparator();
-        JLabel targetAmountLabel = new JLabel();
-        JTextField targetAmountOutputTextField = new JTextField();
-        JPanel historicalDataOutputPanel = new JPanel();
+        JPanel currencyRatePanel = new JPanel();
+        JLabel sourceCurrencyLabel = new JLabel();
+        JLabel targetCurrencyLabel = new JLabel();
+        JPanel historicalGraphPanel = new JPanel();
+
+        model.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+            switch (evt.getPropertyName()) {
+                case PROP_CURRENCYCODES: {
+                    List<String> currencyCodeList = (List<String>) evt.getNewValue();
+                    Collections.sort(currencyCodeList);
+                    String[] currencyCodes = currencyCodeList.toArray(new String[currencyCodeList.size()]);
+                    DefaultComboBoxModel sourceComboBoxModel = new DefaultComboBoxModel(currencyCodes);
+                    DefaultComboBoxModel targetComboBoxModel = new DefaultComboBoxModel(currencyCodes);
+                    sourceCurrencyComboBox.setModel(sourceComboBoxModel);
+                    targetCurrencyComboBox.setModel(targetComboBoxModel);
+                    model.setSourceCurrencyCode((String) sourceCurrencyComboBox.getSelectedItem());
+                    model.setTargetCurrencyCode((String) sourceCurrencyComboBox.getSelectedItem());
+                    break;
+                }
+                case PROP_SOURCECURRENCYCODE: {
+//                    sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", model.getSourceAmount(), getNameForCode((String) evt.getNewValue()), model.getLastUpdatedDate()));
+                    sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", 1.0, getNameForCode((String) evt.getNewValue()), model.getLastUpdatedDate()));
+                    break;
+                }
+                case PROP_TARGETCURRENCYCODE: {
+//                    targetCurrencyLabel.setText(String.format("%.2f %s RATE (from/to) %f", model.getTargetAmount(), getNameForCode((String) evt.getNewValue()), model.getRate()));
+                    targetCurrencyLabel.setText(String.format("%.4f %s", model.getRate(), getNameForCode((String) evt.getNewValue())));
+                    break;
+                }
+                case PROP_SOURCEAMOUNT: {
+                    Double amount = (Double) evt.getNewValue();
+                    String code = model.getSourceCurrencyCode();
+//                    sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", amount, getNameForCode(code), model.getLastUpdatedDate()));
+                    sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", 1.0, getNameForCode(code), model.getLastUpdatedDate()));
+                    try {
+                        sourceAmountTextField.setText(String.format("%.2f", amount));
+                    } catch (IllegalStateException ex) {
+                    }
+                    break;
+                }
+                case PROP_TARGETAMOUNT: {
+                    Double amount = (Double) evt.getNewValue();
+                    String code = model.getTargetCurrencyCode();
+//                    targetCurrencyLabel.setText(String.format("%.2f %s RATE (from/to) %f", amount, getNameForCode(code), model.getRate()));
+                    targetCurrencyLabel.setText(String.format("%.4f %s", model.getRate(), getNameForCode(code)));
+                    try {
+                        targetAmountTextField.setText(String.format("%.2f", amount));
+                    } catch (IllegalStateException ex) {
+                    }
+                    break;
+                }
+            }
+        });
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Exchange! - a currency exchange application");
 
-        sourceCurrencyLabel.setText("Source Currency");
+        dataEntryPanel.setFont(new Font("Lucida Grande", 0, 14)); // NOI18N
 
-        List<String> currencyCodeList = erdb.getCurrencyCodes();
-        Collections.sort(currencyCodeList);
-        String[] currencyCodes = currencyCodeList.toArray(new String[currencyCodeList.size()]);
+        sourceAmountTextField.setFont(dataEntryPanel.getFont());
+        sourceAmountTextField.setHorizontalAlignment(JTextField.TRAILING);
+        sourceAmountTextField.getDocument().addDocumentListener(new DocumentListener() {
 
-        DefaultComboBoxModel sourceComboBoxModel = new DefaultComboBoxModel(currencyCodes);
-        sourceCurrencyComboBox.setModel(sourceComboBoxModel);
+            private void handler(DocumentEvent e) {
+                try {
+                    String amtString = sourceAmountTextField.getText();
+                    model.setSourceAmount(Double.parseDouble(amtString));
+                    sourceAmountTextField.setBackground(Color.white);
+                } catch (NumberFormatException ex) {
+                    sourceAmountTextField.setBackground(Color.red);
+                }
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                handler(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                handler(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                handler(e);
+            }
+        });
+
+        sourceCurrencyComboBox.setFont(dataEntryPanel.getFont());
+        sourceCurrencyComboBox.setModel(new DefaultComboBoxModel(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
         sourceCurrencyComboBox.addItemListener((ItemEvent evt) -> {
-            sourceCurrencyComboBoxItemStateChanged(evt);
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                model.setSourceCurrencyCode((String) evt.getItem());
+            }
         });
-        model.setSourceCurrencyCode((String) sourceCurrencyComboBox.getSelectedItem());
 
-        targetCurrencyLabel.setText("Target Currency");
+        targetAmountTextField.setFont(dataEntryPanel.getFont());
+        targetAmountTextField.setHorizontalAlignment(JTextField.TRAILING);
+        targetAmountTextField.getDocument().addDocumentListener(new DocumentListener() {
 
-        DefaultComboBoxModel targetComboBoxModel = new DefaultComboBoxModel(currencyCodes);
-        targetCurrencyComboBox.setModel(targetComboBoxModel);
+            private void handler(DocumentEvent e) {
+                try {
+                    String amtString = targetAmountTextField.getText();
+                    model.setTargetAmount(Double.parseDouble(amtString));
+                    targetAmountTextField.setBackground(Color.white);
+                } catch (NumberFormatException ex) {
+                    targetAmountTextField.setBackground(Color.red);
+                }
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                handler(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                handler(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                handler(e);
+            }
+        });
+
+        targetCurrencyComboBox.setFont(dataEntryPanel.getFont());
+        targetCurrencyComboBox.setModel(new DefaultComboBoxModel(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
         targetCurrencyComboBox.addItemListener((ItemEvent evt) -> {
-            targetCurrencyComboBoxItemStateChanged(evt);
-        });
-        model.setTargetCurrencyCode((String) targetCurrencyComboBox.getSelectedItem());
-
-        sourceAmountLabel.setText("Source Amount");
-
-//        sourceAmountInputTextField.getDocument().addDocumentListener(new DocumentListener() {
-//
-//            @Override
-//            public void insertUpdate(DocumentEvent e) {
-//                try {
-//                    String text = e.getDocument().getText(0, e.getLength());
-//                    System.out.println(text);
-//                } catch (BadLocationException ex) {
-//                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//
-//            @Override
-//            public void removeUpdate(DocumentEvent e) {
-//                try {
-//                    String text = e.getDocument().getText(0, e.getLength());
-//                    System.out.println(text);
-//                } catch (BadLocationException ex) {
-//                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//
-//            @Override
-//            public void changedUpdate(DocumentEvent e) {
-//                try {
-//                    String text = e.getDocument().getText(0, e.getLength());
-//                    System.out.println(text);
-//                } catch (BadLocationException ex) {
-//                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//        });
-        sourceAmountInputTextField.addActionListener((ActionEvent evt) -> {
-            sourceAmountInputTextFieldActionPerformed(evt);
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                model.setTargetCurrencyCode((String) evt.getItem());
+            }
         });
 
-        targetAmountLabel.setText("Target Amount");
-        targetAmountOutputTextField.setEditable(false);
-
-        historicalDataOutputPanel.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0)));
-
-        GroupLayout historicalDataOutputPanelLayout = new GroupLayout(historicalDataOutputPanel);
-        historicalDataOutputPanel.setLayout(historicalDataOutputPanelLayout);
-        historicalDataOutputPanelLayout.setHorizontalGroup(historicalDataOutputPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 946, Short.MAX_VALUE)
+        GroupLayout dataEntryPanelLayout = new GroupLayout(dataEntryPanel);
+        dataEntryPanel.setLayout(dataEntryPanelLayout);
+        dataEntryPanelLayout.setHorizontalGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(dataEntryPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                    .addComponent(sourceAmountTextField, GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                    .addComponent(targetAmountTextField))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(sourceCurrencyComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(targetCurrencyComboBox, 0, 158, Short.MAX_VALUE))
+                .addContainerGap())
         );
-        historicalDataOutputPanelLayout.setVerticalGroup(historicalDataOutputPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 325, Short.MAX_VALUE)
+        dataEntryPanelLayout.setVerticalGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(dataEntryPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(sourceAmountTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sourceCurrencyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(targetAmountTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(targetCurrencyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        sourceCurrencyLabel.setFont(new Font("Lucida Sans", 0, 18)); // NOI18N
+        sourceCurrencyLabel.setForeground(new Color(153, 153, 153));
+        sourceCurrencyLabel.setText("sourceCurrencyLabel");
+
+        targetCurrencyLabel.setFont(new Font("Lucida Grande", 0, 36)); // NOI18N
+        targetCurrencyLabel.setText("targetCurrencyLabel");
+
+        GroupLayout currencyRatePanelLayout = new GroupLayout(currencyRatePanel);
+        currencyRatePanel.setLayout(currencyRatePanelLayout);
+        currencyRatePanelLayout.setHorizontalGroup(currencyRatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(currencyRatePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(currencyRatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(targetCurrencyLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sourceCurrencyLabel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        currencyRatePanelLayout.setVerticalGroup(currencyRatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(currencyRatePanelLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(sourceCurrencyLabel)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(targetCurrencyLabel)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        GroupLayout historicalGraphPanelLayout = new GroupLayout(historicalGraphPanel);
+        historicalGraphPanel.setLayout(historicalGraphPanelLayout);
+        historicalGraphPanelLayout.setHorizontalGroup(historicalGraphPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGap(0, 275, Short.MAX_VALUE)
+        );
+        historicalGraphPanelLayout.setVerticalGroup(historicalGraphPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(separator)
-                .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addGroup(mainPanelLayout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addComponent(sourceCurrencyLabel)
-                                                .addComponent(targetCurrencyLabel)
-                                                .addComponent(sourceAmountLabel))
-                                        .addGap(35, 35, 35)
-                                        .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addComponent(sourceCurrencyComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(targetCurrencyComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(sourceAmountInputTextField)))
-                                .addGroup(mainPanelLayout.createSequentialGroup()
-                                        .addGap(17, 17, 17)
-                                        .addComponent(targetAmountLabel)
-                                        .addGap(45, 45, 45)
-                                        .addComponent(targetAmountOutputTextField)))
-                        .addContainerGap())
-                .addComponent(historicalDataOutputPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(currencyRatePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(dataEntryPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(historicalGraphPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(sourceCurrencyLabel)
-                                .addComponent(sourceCurrencyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(targetCurrencyLabel)
-                                .addComponent(targetCurrencyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(sourceAmountLabel)
-                                .addComponent(sourceAmountInputTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(separator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(targetAmountLabel)
-                                .addComponent(targetAmountOutputTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(historicalDataOutputPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(currencyRatePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                    .addComponent(dataEntryPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(historicalGraphPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        setSize(new Dimension(960, 540));
+        setSize(new Dimension(652, 223));
         setLocationRelativeTo(null);
-    }
-
-    private void sourceAmountInputTextFieldActionPerformed(ActionEvent evt) {
-        System.out.println(evt);
-    }
-
-    private void sourceCurrencyComboBoxItemStateChanged(ItemEvent evt) {
-        if (evt.getStateChange() == ItemEvent.SELECTED) {
-            model.setSourceCurrencyCode((String) evt.getItem());
-        }
-    }
-
-    private void targetCurrencyComboBoxItemStateChanged(ItemEvent evt) {
-        if (evt.getStateChange() == ItemEvent.SELECTED) {
-            model.setTargetCurrencyCode((String) evt.getItem());
-        }
+    //</editor-fold>
     }
 
     public static void go() {
@@ -310,5 +323,134 @@ public class Gui extends JFrame {
         java.awt.EventQueue.invokeLater(() -> {
             new Gui().setVisible(true);
         });
+    }
+}
+
+class Model {
+
+    public static final String PROP_SOURCECURRENCYCODE = "sourceCurrencyCode";
+    public static final String PROP_TARGETCURRENCYCODE = "targetCurrencyCode";
+    public static final String PROP_SOURCEAMOUNT = "sourceAmount";
+    public static final String PROP_TARGETAMOUNT = "targetAmount";
+    public static final String PROP_CURRENCYCODES = "currencyCodes";
+
+    private String sourceCurrencyCode;
+    private String targetCurrencyCode;
+    private Double sourceAmount;
+    private Double targetAmount;
+    private List<String> currencyCodes;
+    private boolean fromSetSource = false;
+    private boolean fromSetTarget = false;
+
+    private final CurrencyConversionLogic logic = new CurrencyConversionLogic();
+    private final ExchangeRateDB erdb = new ExchangeRateDB();
+
+    public String getLastUpdatedDate() {
+        return erdb.getUpdatedTime(sourceCurrencyCode);
+    }
+
+    public Double getRate() {
+        if (sourceCurrencyCode != null && targetCurrencyCode != null) {
+            return logic.getRate(sourceCurrencyCode, targetCurrencyCode);
+        } else {
+            return 1.0;
+        }
+    }
+
+    public String getSourceCurrencyCode() {
+        return sourceCurrencyCode;
+    }
+
+    private void computeTargetAmount() {
+        if (sourceCurrencyCode != null && targetCurrencyCode != null) {
+            setTargetAmount(logic.convert(sourceCurrencyCode, targetCurrencyCode, sourceAmount));
+        }
+    }
+
+    private void computeSourceAmount() {
+        if (sourceCurrencyCode != null && targetCurrencyCode != null) {
+           setSourceAmount(logic.convert(targetCurrencyCode, sourceCurrencyCode, targetAmount));
+        }
+    }
+
+    public void setSourceCurrencyCode(String sourceCurrencyCode) {
+        String oldSourceCurrencyCode = this.sourceCurrencyCode;
+        this.sourceCurrencyCode = sourceCurrencyCode;
+        propertyChangeSupport.firePropertyChange(PROP_SOURCECURRENCYCODE, oldSourceCurrencyCode, sourceCurrencyCode);
+        if (!fromSetTarget) {
+            fromSetSource = true;
+            computeTargetAmount();
+            fromSetSource = false;
+        }
+    }
+
+    public String getTargetCurrencyCode() {
+        return targetCurrencyCode;
+    }
+
+    public void setTargetCurrencyCode(String targetCurrencyCode) {
+        String oldTargetCurrencyCode = this.targetCurrencyCode;
+        this.targetCurrencyCode = targetCurrencyCode;
+        propertyChangeSupport.firePropertyChange(PROP_TARGETCURRENCYCODE, oldTargetCurrencyCode, targetCurrencyCode);
+//        if (!fromSetSource) {
+//            fromSetTarget = true;
+//            computeSourceAmount();
+//            fromSetTarget = false;
+//        }
+        if (!fromSetTarget) {
+            fromSetSource = true;
+            computeTargetAmount();
+            fromSetSource = false;
+        }
+    }
+
+    public Double getSourceAmount() {
+        return sourceAmount;
+    }
+
+    public void setSourceAmount(Double sourceAmount) {
+        Double oldSourceAmount = this.sourceAmount;
+        this.sourceAmount = sourceAmount;
+        propertyChangeSupport.firePropertyChange(PROP_SOURCEAMOUNT, oldSourceAmount, sourceAmount);
+        if (!fromSetTarget) {
+            fromSetSource = true;
+            computeTargetAmount();
+            fromSetSource = false;
+        }
+    }
+
+    public Double getTargetAmount() {
+        return targetAmount;
+    }
+
+    public void setTargetAmount(Double targetAmount) {
+        Double oldTargetAmount = this.targetAmount;
+        this.targetAmount = targetAmount;
+        propertyChangeSupport.firePropertyChange(PROP_TARGETAMOUNT, oldTargetAmount, targetAmount);
+        if (!fromSetSource) {
+            fromSetTarget = true;
+            computeSourceAmount();
+            fromSetTarget = false;
+        }
+    }
+
+    public List<String> getCurrencyCodes() {
+        return currencyCodes;
+    }
+
+    public void setCurrencyCodes(List<String> currencyCodes) {
+        List<String> oldCurrencyCodes = this.currencyCodes;
+        this.currencyCodes = currencyCodes;
+        propertyChangeSupport.firePropertyChange(PROP_CURRENCYCODES, oldCurrencyCodes, currencyCodes);
+    }
+
+    private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
     }
 }
