@@ -48,6 +48,8 @@ public class Gui extends JFrame {
     }
 
     public final void init() {
+        CurrencyConversionLogic logic = new CurrencyConversionLogic();
+        model.setCurrencyConversionLogic(logic);
         model.initModel();
     }
 
@@ -340,8 +342,11 @@ class Model {
     private boolean fromSetSource = false;
     private boolean fromSetTarget = false;
 
-    private final CurrencyConversionLogic logic = new CurrencyConversionLogic();
-    private final ExchangeRateDB erdb = new ExchangeRateDB();
+    private CurrencyConversionLogic logic;
+
+    public void setCurrencyConversionLogic(CurrencyConversionLogic logic) {
+        this.logic = logic;
+    }
 
     public void initModel() {
         setSourceAmount(1.0);
@@ -356,7 +361,7 @@ class Model {
     }
 
     public String getLastUpdatedDate() {
-        return erdb.getUpdatedTime(sourceCurrencyCode);
+        return logic.getLastUpdatedDate(sourceCurrencyCode);
     }
 
     public Double getRate() {
