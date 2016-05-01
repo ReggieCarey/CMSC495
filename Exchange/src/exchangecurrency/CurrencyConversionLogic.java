@@ -26,7 +26,6 @@ public class CurrencyConversionLogic {
 
         this.fromRate = dbService.getRate(fromCurrencyCode);
         this.toRate = dbService.getRate(toCurrencyCode);
-//        rate = this.fromRate / this.toRate;
         rate = this.toRate / this.fromRate;
         return rate;
     }

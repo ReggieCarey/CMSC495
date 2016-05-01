@@ -1,4 +1,3 @@
-
 package exchangecurrency;
 
 import java.sql.Connection;
@@ -14,15 +13,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-
 /**
-    University of Maryland: University College
-    CMSC495 Group 2
-    Class      : ExchangeCurrencyDB
-    Created on : Apr 23, 2016
-    Author     : Brandon Trexler
-
+ * University of Maryland: University College CMSC495 Group 2 Class :
+ * ExchangeCurrencyDB Created on : Apr 23, 2016 Author : Brandon Trexler
+ *
  */
 public class ExchangeRateDB {
 
@@ -37,107 +31,104 @@ public class ExchangeRateDB {
         Connection conn = getConnection();
 
         /*
-            This if statement determines if there is an internet connection and cancels
-            the update if there isn't one.
-        */
-        if(currentPull == null) {
+         This if statement determines if there is an internet connection and cancels
+         the update if there isn't one.
+         */
+        if (currentPull == null) {
 
-            System.out.println("No internet Connection, cannot update rates.");
+            java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, "No internet Connection, cannot update rates.");
 
-        /*
-            This else statement executes if there is an internet connection dropping the current table
-            and recreating the new one.
-        */
+            /*
+             This else statement executes if there is an internet connection dropping the current table
+             and recreating the new one.
+             */
         } else {
             try {
                 conn.createStatement().execute("DROP TABLE exchange");
                 conn.createStatement().execute("create table exchange(code VARCHAR(4), rate DOUBLE, date VARCHAR(11))");
                 System.out.println("table created.");
-            } catch(Exception e) {
+            } catch (Exception e) {
 
-                e.printStackTrace();
+                java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, null, e);
 
             }
 
-            for(int i = 0; i < currentPull.size(); i++) {
+            for (Currency currentPull1 : currentPull) {
                 try {
                     PreparedStatement ps = conn.prepareStatement("INSERT INTO exchange"
                             + "(CODE, RATE, DATE) VALUES "
                             + "(?, ?, ?)");
-                    Currency tempCurrency = currentPull.get(i);
-
+                    Currency tempCurrency = currentPull1;
                     ps.setString(1, tempCurrency.getCode());
                     ps.setDouble(2, tempCurrency.getRate());
                     ps.setString(3, dateFormat.format(currentDate));
                     ps.executeUpdate();
-
                     System.out.println("row add " + tempCurrency.getCode());
-
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, null, e);
                 }
             }
         }
 
         try {
             PreparedStatement prep = conn.prepareStatement("SELECT * FROM exchange");
-            ResultSet res = null;
-            int count = 1;
+            ResultSet res;
 
             res = prep.executeQuery();
 
-            while(res.next()) {
+            while (res.next()) {
                 System.out.println("from DB: " + res.getString("date"));
             }
         } catch (Exception e) {
 
-            e.printStackTrace();
+            java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, null, e);
 
         }
 
         //Closing the connection to the database.
         try {
-            if(!conn.isClosed())
-            conn.close();
+            if (!conn.isClosed()) {
+                conn.close();
+            }
         } catch (Exception e) {
 
         }
     }
 
     /*
-        Getter that returns an ArrayList of the currency codes.
-    */
+     Getter that returns an ArrayList of the currency codes.
+     */
     public List<String> getCurrencyCodes() {
         Connection conn = getConnection();
         List<String> codes = new ArrayList<>();
 
-        try{
-           PreparedStatement ps = conn.prepareStatement("SELECT code FROM exchange");
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT code FROM exchange");
 
-           ResultSet results = null;
-           results = ps.executeQuery();
+            ResultSet results;
+            results = ps.executeQuery();
 
-           while(results.next()) {
-               codes.add(results.getString("code"));
-           }
+            while (results.next()) {
+                codes.add(results.getString("code"));
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, null, e);
         } finally {
             try {
-                if(!conn.isClosed())
+                if (!conn.isClosed()) {
                     conn.close();
+                }
             } catch (Exception e) {
 
             }
         }
 
-
         return codes;
     }
 
     /*
-        Getter that returns a rate based upon a currency code provided.
-    */
+     Getter that returns a rate based upon a currency code provided.
+     */
     public Double getRate(String code) {
         Connection conn = getConnection();
         Double rate = null;
@@ -145,18 +136,19 @@ public class ExchangeRateDB {
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT rate FROM exchange WHERE code = '" + code + "'");
 
-            ResultSet results = null;
+            ResultSet results;
             results = ps.executeQuery();
 
-            while(results.next()) {
+            while (results.next()) {
                 rate = results.getDouble("rate");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, null, e);
         } finally {
             try {
-                if(!conn.isClosed())
+                if (!conn.isClosed()) {
                     conn.close();
+                }
             } catch (Exception e) {
 
             }
@@ -166,28 +158,29 @@ public class ExchangeRateDB {
     }
 
     /*
-        Getter that returns the last time the code was updated based upong
-        a code provided.
-    */
+     Getter that returns the last time the code was updated based upong
+     a code provided.
+     */
     public String getUpdatedTime(String code) {
         Connection conn = getConnection();
         String updatedTime = new String();
 
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT date FROM exchange WHERE code = '" + code + "'");
-            ResultSet results = null;
+            ResultSet results;
 
             results = ps.executeQuery();
 
-            while(results.next()) {
+            while (results.next()) {
                 updatedTime = results.getString("date");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, null, e);
         } finally {
             try {
-                if(!conn.isClosed())
+                if (!conn.isClosed()) {
                     conn.close();
+                }
             } catch (Exception e) {
 
             }
@@ -208,10 +201,10 @@ public class ExchangeRateDB {
                 System.out.println("Connected to database.");
             }
 
-        } catch (ClassNotFoundException e){
+        } catch (ClassNotFoundException e) {
 
             System.out.println("Where is your Derby driver?");
-            e.printStackTrace();
+            java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, null, e);
 
         } catch (SQLException ex) {
             Logger.getLogger(ExchangeRateDB.class.getName()).log(Level.SEVERE, null, ex);
