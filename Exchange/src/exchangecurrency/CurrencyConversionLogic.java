@@ -8,9 +8,16 @@ package exchangecurrency;
 import java.util.List;
 
 /**
- * University of Maryland: University College CMSC495 Group 2 Class :
- * CurrencyConversionLogic Created on : Apr 24, 2016 Author : Jason Dudash
+ * University of Maryland: University College 
+ * CMSC495 Group 2 Class : CurrencyConversionLogic 
+ * Created on : Apr 24, 2016 
+ * Author : Jason Dudash
  *
+ * Changes
+ * Added Constructor, Reggie, May 1,2015
+ * Added getCurrencyCode, Reggie, May 1, 2015
+ * Adjusted rate calculation, Reggie, May 1, 2015
+ * 
  */
 public class CurrencyConversionLogic {
 
