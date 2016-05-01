@@ -44,4 +44,8 @@ public class CurrencyConversionLogic {
         return dbService.getCurrencyCodes();
     }
 
+    public String getLastUpdatedDate(String sourceCurrencyCode) {
+        return dbService.getUpdatedTime(sourceCurrencyCode);
+    }
+
 }
