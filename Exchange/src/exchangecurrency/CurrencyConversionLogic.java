@@ -5,21 +5,24 @@
  */
 package exchangecurrency;
 
-/**
-    University of Maryland: University College
-    CMSC495 Group 2
-    Class      : CurrencyConversionLogic
-    Created on : Apr 24, 2016
-    Author     : Jason Dudash
+import java.util.List;
 
+/**
+ * University of Maryland: University College CMSC495 Group 2 Class :
+ * CurrencyConversionLogic Created on : Apr 24, 2016 Author : Jason Dudash
+ *
  */
 public class CurrencyConversionLogic {
-    private Double conversionRate;
 
     private Double fromRate;
     private Double toRate;
 
     ExchangeRateDB dbService = new ExchangeRateDB();
+    ExchangeRateWebService webService = new ExchangeRateWebService();
+
+    public CurrencyConversionLogic() {
+        dbService.updateRates(webService.getRate());
+    }
 
     public Double getRate(String fromCurrencyCode, String toCurrencyCode) {
         Double rate;
@@ -33,13 +36,12 @@ public class CurrencyConversionLogic {
     public Double convert(String fromCurrencyCode, String toCurrencyCode, Double amount) {
         Double newAmount;
 
-        this.conversionRate = this.getRate(fromCurrencyCode, toCurrencyCode);
-        newAmount = amount * this.conversionRate;
+        newAmount = amount * this.getRate(fromCurrencyCode, toCurrencyCode);
         return newAmount;
     }
 
-    public Double getConversionRate() {
-        return this.conversionRate;
+    public List<String> getCurrencyCodes() {
+        return dbService.getCurrencyCodes();
     }
 
 }

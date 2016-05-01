@@ -44,6 +44,10 @@ public class Gui extends JFrame {
 
     private Gui() {
         initComponents();
+        init();
+    }
+
+    public final void init() {
         model.initModel();
     }
 
@@ -342,7 +346,7 @@ class Model {
     public void initModel() {
         setSourceAmount(1.0);
         setTargetAmount(1.0);
-        setCurrencyCodes(erdb.getCurrencyCodes());
+        setCurrencyCodes(logic.getCurrencyCodes());
         setSourceCurrencyCode("USD");
         setTargetCurrencyCode("EUR");
     }
