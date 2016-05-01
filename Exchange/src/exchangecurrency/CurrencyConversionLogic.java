@@ -18,28 +18,29 @@ public class CurrencyConversionLogic {
 
     private Double fromRate;
     private Double toRate;
-        
-    ExchangeRateDB dbService = new ExchangeRateDB();    
-    
+
+    ExchangeRateDB dbService = new ExchangeRateDB();
+
     public Double getRate(String fromCurrencyCode, String toCurrencyCode) {
         Double rate;
-     
+
         this.fromRate = dbService.getRate(fromCurrencyCode);
         this.toRate = dbService.getRate(toCurrencyCode);
-        rate = this.fromRate / this.toRate;
+//        rate = this.fromRate / this.toRate;
+        rate = this.toRate / this.fromRate;
         return rate;
     }
-    
+
     public Double convert(String fromCurrencyCode, String toCurrencyCode, Double amount) {
         Double newAmount;
-        
+
         this.conversionRate = this.getRate(fromCurrencyCode, toCurrencyCode);
         newAmount = amount * this.conversionRate;
         return newAmount;
     }
-    
+
     public Double getConversionRate() {
         return this.conversionRate;
     }
-    
+
 }
