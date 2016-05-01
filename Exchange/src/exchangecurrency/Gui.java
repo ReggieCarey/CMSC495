@@ -41,18 +41,11 @@ public class Gui extends JFrame {
 
     private Gui() {
         initComponents();
-
-        model.setSourceAmount(1.0);
-        model.setTargetAmount(1.0);
-        model.setCurrencyCodes(new ExchangeRateDB().getCurrencyCodes());
-    }
-
-    private String getNameForCode(String code) {
-        return code;
+        model.initModel();
     }
 
     private void initComponents() {
-    //<editor-fold defaultstate="collapsed" desc=" Setup the GUI ">
+        //<editor-fold defaultstate="collapsed" desc=" Setup the GUI ">
 
         JPanel mainPanel = new JPanel();
         JPanel dataEntryPanel = new JPanel();
@@ -80,20 +73,19 @@ public class Gui extends JFrame {
                     break;
                 }
                 case PROP_SOURCECURRENCYCODE: {
-//                    sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", model.getSourceAmount(), getNameForCode((String) evt.getNewValue()), model.getLastUpdatedDate()));
-                    sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", 1.0, getNameForCode((String) evt.getNewValue()), model.getLastUpdatedDate()));
+                    sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", 1.0, model.getNameForCode((String) evt.getNewValue()), model.getLastUpdatedDate()));
+                    sourceCurrencyComboBox.setSelectedItem(evt.getNewValue());
                     break;
                 }
                 case PROP_TARGETCURRENCYCODE: {
-//                    targetCurrencyLabel.setText(String.format("%.2f %s RATE (from/to) %f", model.getTargetAmount(), getNameForCode((String) evt.getNewValue()), model.getRate()));
-                    targetCurrencyLabel.setText(String.format("%.4f %s", model.getRate(), getNameForCode((String) evt.getNewValue())));
+                    targetCurrencyLabel.setText(String.format("%.4f %s", model.getRate(), model.getNameForCode((String) evt.getNewValue())));
+                    targetCurrencyComboBox.setSelectedItem(evt.getNewValue());
                     break;
                 }
                 case PROP_SOURCEAMOUNT: {
                     Double amount = (Double) evt.getNewValue();
                     String code = model.getSourceCurrencyCode();
-//                    sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", amount, getNameForCode(code), model.getLastUpdatedDate()));
-                    sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", 1.0, getNameForCode(code), model.getLastUpdatedDate()));
+                    sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", 1.0, model.getNameForCode(code), model.getLastUpdatedDate()));
                     try {
                         sourceAmountTextField.setText(String.format("%.2f", amount));
                     } catch (IllegalStateException ex) {
@@ -103,8 +95,7 @@ public class Gui extends JFrame {
                 case PROP_TARGETAMOUNT: {
                     Double amount = (Double) evt.getNewValue();
                     String code = model.getTargetCurrencyCode();
-//                    targetCurrencyLabel.setText(String.format("%.2f %s RATE (from/to) %f", amount, getNameForCode(code), model.getRate()));
-                    targetCurrencyLabel.setText(String.format("%.4f %s", model.getRate(), getNameForCode(code)));
+                    targetCurrencyLabel.setText(String.format("%.4f %s", model.getRate(), model.getNameForCode(code)));
                     try {
                         targetAmountTextField.setText(String.format("%.2f", amount));
                     } catch (IllegalStateException ex) {
@@ -198,28 +189,28 @@ public class Gui extends JFrame {
         GroupLayout dataEntryPanelLayout = new GroupLayout(dataEntryPanel);
         dataEntryPanel.setLayout(dataEntryPanelLayout);
         dataEntryPanelLayout.setHorizontalGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(dataEntryPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                    .addComponent(sourceAmountTextField, GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                    .addComponent(targetAmountTextField))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(sourceCurrencyComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(targetCurrencyComboBox, 0, 158, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(dataEntryPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                .addComponent(sourceAmountTextField, GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                                .addComponent(targetAmountTextField))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(sourceCurrencyComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(targetCurrencyComboBox, 0, 158, Short.MAX_VALUE))
+                        .addContainerGap())
         );
         dataEntryPanelLayout.setVerticalGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(dataEntryPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(sourceAmountTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sourceCurrencyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(targetAmountTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(targetCurrencyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(dataEntryPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(sourceAmountTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(sourceCurrencyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(targetAmountTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(targetCurrencyComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         sourceCurrencyLabel.setFont(new Font("Lucida Sans", 0, 18)); // NOI18N
@@ -232,76 +223,76 @@ public class Gui extends JFrame {
         GroupLayout currencyRatePanelLayout = new GroupLayout(currencyRatePanel);
         currencyRatePanel.setLayout(currencyRatePanelLayout);
         currencyRatePanelLayout.setHorizontalGroup(currencyRatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(currencyRatePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(currencyRatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(targetCurrencyLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(sourceCurrencyLabel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(currencyRatePanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(currencyRatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(targetCurrencyLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(sourceCurrencyLabel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
         );
         currencyRatePanelLayout.setVerticalGroup(currencyRatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(currencyRatePanelLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(sourceCurrencyLabel)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(targetCurrencyLabel)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(currencyRatePanelLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(sourceCurrencyLabel)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(targetCurrencyLabel)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         GroupLayout historicalGraphPanelLayout = new GroupLayout(historicalGraphPanel);
         historicalGraphPanel.setLayout(historicalGraphPanelLayout);
         historicalGraphPanelLayout.setHorizontalGroup(historicalGraphPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 275, Short.MAX_VALUE)
+                .addGap(0, 275, Short.MAX_VALUE)
         );
         historicalGraphPanelLayout.setVerticalGroup(historicalGraphPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
         );
 
         GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(currencyRatePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(dataEntryPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(historicalGraphPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(currencyRatePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(mainPanelLayout.createSequentialGroup()
+                                        .addComponent(dataEntryPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(historicalGraphPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(currencyRatePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                    .addComponent(dataEntryPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(historicalGraphPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(currencyRatePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                .addComponent(dataEntryPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(historicalGraphPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
         );
 
         setSize(new Dimension(652, 223));
         setLocationRelativeTo(null);
-    //</editor-fold>
+        //</editor-fold>
     }
 
-    public static void go() {
+    public static void main(String[] args) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -345,6 +336,18 @@ class Model {
     private final CurrencyConversionLogic logic = new CurrencyConversionLogic();
     private final ExchangeRateDB erdb = new ExchangeRateDB();
 
+    public void initModel() {
+        setSourceAmount(1.0);
+        setTargetAmount(1.0);
+        setCurrencyCodes(erdb.getCurrencyCodes());
+        setSourceCurrencyCode("USD");
+        setTargetCurrencyCode("EUR");
+    }
+
+    public String getNameForCode(String code) {
+        return code;
+    }
+
     public String getLastUpdatedDate() {
         return erdb.getUpdatedTime(sourceCurrencyCode);
     }
@@ -369,7 +372,7 @@ class Model {
 
     private void computeSourceAmount() {
         if (sourceCurrencyCode != null && targetCurrencyCode != null) {
-           setSourceAmount(logic.convert(targetCurrencyCode, sourceCurrencyCode, targetAmount));
+            setSourceAmount(logic.convert(targetCurrencyCode, sourceCurrencyCode, targetAmount));
         }
     }
 
@@ -392,11 +395,6 @@ class Model {
         String oldTargetCurrencyCode = this.targetCurrencyCode;
         this.targetCurrencyCode = targetCurrencyCode;
         propertyChangeSupport.firePropertyChange(PROP_TARGETCURRENCYCODE, oldTargetCurrencyCode, targetCurrencyCode);
-//        if (!fromSetSource) {
-//            fromSetTarget = true;
-//            computeSourceAmount();
-//            fromSetTarget = false;
-//        }
         if (!fromSetTarget) {
             fromSetSource = true;
             computeTargetAmount();
@@ -408,7 +406,7 @@ class Model {
         return sourceAmount;
     }
 
-    public void setSourceAmount(Double sourceAmount) {
+    public final void setSourceAmount(Double sourceAmount) {
         Double oldSourceAmount = this.sourceAmount;
         this.sourceAmount = sourceAmount;
         propertyChangeSupport.firePropertyChange(PROP_SOURCEAMOUNT, oldSourceAmount, sourceAmount);
@@ -423,7 +421,7 @@ class Model {
         return targetAmount;
     }
 
-    public void setTargetAmount(Double targetAmount) {
+    public final void setTargetAmount(Double targetAmount) {
         Double oldTargetAmount = this.targetAmount;
         this.targetAmount = targetAmount;
         propertyChangeSupport.firePropertyChange(PROP_TARGETAMOUNT, oldTargetAmount, targetAmount);
@@ -438,7 +436,7 @@ class Model {
         return currencyCodes;
     }
 
-    public void setCurrencyCodes(List<String> currencyCodes) {
+    public final void setCurrencyCodes(List<String> currencyCodes) {
         List<String> oldCurrencyCodes = this.currencyCodes;
         this.currencyCodes = currencyCodes;
         propertyChangeSupport.firePropertyChange(PROP_CURRENCYCODES, oldCurrencyCodes, currencyCodes);
