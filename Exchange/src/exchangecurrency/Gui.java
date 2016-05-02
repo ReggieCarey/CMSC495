@@ -30,6 +30,10 @@ import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 /**
     University of Maryland: University College
@@ -61,6 +65,8 @@ public class Gui extends JFrame {
         JTextField sourceAmountTextField = new JTextField();
         JComboBox sourceCurrencyComboBox = new JComboBox();
         JTextField targetAmountTextField = new JTextField();
+        DocumentFilter numberfilter = new NonNumericFilter();
+        ((AbstractDocument)sourceAmountTextField.getDocument()).setDocumentFilter(numberfilter);
         JComboBox targetCurrencyComboBox = new JComboBox();
         JPanel currencyRatePanel = new JPanel();
         JLabel sourceCurrencyLabel = new JLabel();
@@ -463,4 +469,33 @@ class Model {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
+}
+
+class NonNumericFilter extends DocumentFilter {
+ 
+@Override
+public void insertString(DocumentFilter.FilterBypass fb, int offs,
+String str, AttributeSet a) throws BadLocationException {
+                String text = fb.getDocument().getText(0,
+                        fb.getDocument().getLength());
+                text += str;
+                if (text.matches("^[0-9]+[.]?[0-9]{0,2}$")) {
+                    super.insertString(fb, offs, str, a);
+                } else {
+                }
+}
+  
+// no need to override remove(): inherited version allows all removals
+  
+@Override
+public void replace(DocumentFilter.FilterBypass fb, int offs, int length,
+String str, AttributeSet a) throws BadLocationException {
+                String text = fb.getDocument().getText(0,
+                        fb.getDocument().getLength());
+                text += str;
+                if (text.matches("^[0-9]+[.]?[0-9]{0,2}$")) {
+                    super.insertString(fb, offs, str, a);
+                } else {
+                }
+}
 }

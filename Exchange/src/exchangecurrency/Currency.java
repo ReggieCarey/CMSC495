@@ -5,6 +5,9 @@
  */
 package exchangecurrency;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 
 /**
@@ -19,7 +22,10 @@ public class Currency {
     private String code;
     private Double rate;
     private String lastUpdated;
-    
+    private boolean usesDecimals = true;
+    private static List noDecimalCodes = Arrays.asList("BIF","DJF","JPY",
+           "KRW","PYG","VND","XAF","XPF","CLP","GNF","KMF","MGA","RWF",
+           "VUV","XOF");
     //Default constructor
     public Currency(){
         
@@ -30,6 +36,8 @@ public class Currency {
         this.code = code;
         this.rate = rate;
         this.lastUpdated = lastUpdated;
+        if(noDecimalCodes.contains(code))
+           this.usesDecimals=false;
     }
     
     //Setters
@@ -54,5 +62,9 @@ public class Currency {
     
     public String getLastUpdated() {
         return this.lastUpdated;
+    }
+    
+    public boolean getDecimalUsage(){
+        return this.usesDecimals;
     }
 }
