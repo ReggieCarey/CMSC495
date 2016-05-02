@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Sun May 01 15:37:00 HST 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-0154-6f1c-83e4-00000d2e76a8 
+Sun May 01 19:24:42 HST 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-0154-6fec-fa4f-00000d2e2bd0 
 on database directory C:\Users\rcool\Documents\495\CMSC495\Exchange\exchangedb with class loader sun.misc.Launcher$AppClassLoader@75b84c92 
 Loaded from file:/C:/Users/rcool/Documents/495/CMSC495/Exchange/lib/derby.jar
 java.vendor=Oracle Corporation

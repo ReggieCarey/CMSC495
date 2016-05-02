@@ -13,12 +13,15 @@ import static exchangecurrency.Model.PROP_TARGETCURRENCYCODE;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
@@ -478,36 +481,44 @@ class Model {
 }
 
 class NonNumericFilter extends DocumentFilter {
-    private int decimals = 2;
-    
-    public NonNumericFilter(int x)
-    {
+
+    private int decimals = 0;
+    Pattern pattern; 
+    Matcher match;
+
+    public NonNumericFilter(int x) {
         decimals = x;
+        pattern = Pattern.compile("^[0-9]+[.]?[0-9]{0," + decimals + "}$");
     }
 
-@Override
-public void insertString(DocumentFilter.FilterBypass fb, int offs,
-String str, AttributeSet a) throws BadLocationException {
-                String text = fb.getDocument().getText(0,
-                        fb.getDocument().getLength());
-                text += str;
-                if (text.matches("^[0-9]+[.]?[0-9]{0,"+ decimals + "}$")) {
-                    super.insertString(fb, offs, str, a);
-                } else {
-                }
-}
+    @Override
+    public void insertString(DocumentFilter.FilterBypass fb, int offs,
+            String str, AttributeSet a) throws BadLocationException {
+        String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+        if (str.contains(".") && text.contains(".")) {
+            text = "";
+        }
+        match = pattern.matcher(text + str);
+        if (match.matches()) {
+            super.insertString(fb, offs, str, a);
+        } else {
+        }
+    }
 
-// no need to override remove(): inherited version allows all removals
 
-@Override
-public void replace(DocumentFilter.FilterBypass fb, int offs, int length,
-String str, AttributeSet a) throws BadLocationException {
-                String text = fb.getDocument().getText(0,
-                        fb.getDocument().getLength());
-                text += str;
-                if (text.matches("^[0-9]+[.]?[0-9]{0,"+ decimals + "}$")) {
-                    super.insertString(fb, offs, str, a);
-                } else {
-                }
-}
+    @Override
+    public void replace(DocumentFilter.FilterBypass fb, int offs, int length,
+            String str, AttributeSet a) throws BadLocationException {
+        String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+        if (str.contains(".") && text.contains(".")) {
+            text = "";
+        }
+        match = pattern.matcher(text + str);
+        if (match.matches()) {
+            fb.replace(offs, length, str, a);
+        } else {
+            Toolkit.getDefaultToolkit().beep();
+        }
+
+    }
 }
