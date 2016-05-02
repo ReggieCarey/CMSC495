@@ -45,12 +45,14 @@ public class ExchangeRateDB {
         } else {
             try {
                 conn.createStatement().execute("DROP TABLE exchange");
+                System.out.println("table dropped.");
+            } catch (Exception e) {
+            }
+            try {
                 conn.createStatement().execute("create table exchange(code VARCHAR(4), rate DOUBLE, date VARCHAR(11), decimalUsage BOOLEAN)");
                 System.out.println("table created.");
             } catch (Exception e) {
-
                 java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, null, e);
-
             }
 
             for (Currency currentPull1 : currentPull) {
