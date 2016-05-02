@@ -366,6 +366,10 @@ class Model {
         return code;
     }
 
+    public Boolean getDecimalUsage(String code) {
+        return logic.getDecimalUsage(code);
+    }
+
     public String getLastUpdatedDate() {
         return logic.getLastUpdatedDate(sourceCurrencyCode);
     }
@@ -472,7 +476,7 @@ class Model {
 }
 
 class NonNumericFilter extends DocumentFilter {
- 
+
 @Override
 public void insertString(DocumentFilter.FilterBypass fb, int offs,
 String str, AttributeSet a) throws BadLocationException {
@@ -484,9 +488,9 @@ String str, AttributeSet a) throws BadLocationException {
                 } else {
                 }
 }
-  
+
 // no need to override remove(): inherited version allows all removals
-  
+
 @Override
 public void replace(DocumentFilter.FilterBypass fb, int offs, int length,
 String str, AttributeSet a) throws BadLocationException {
