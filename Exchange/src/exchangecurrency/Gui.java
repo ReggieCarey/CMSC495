@@ -62,12 +62,13 @@ public class Gui extends JFrame {
 
         JPanel mainPanel = new JPanel();
         JPanel dataEntryPanel = new JPanel();
-        JTextField sourceAmountTextField = new JTextField();
-        JComboBox sourceCurrencyComboBox = new JComboBox();
-        JTextField targetAmountTextField = new JTextField();
         DocumentFilter standardNumericFilter = new NonNumericFilter(2);
         DocumentFilter nonDecimalNumericFilter = new NonNumericFilter(0);
+        JTextField sourceAmountTextField = new JTextField();
         ((AbstractDocument)sourceAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
+        JComboBox sourceCurrencyComboBox = new JComboBox();
+        JTextField targetAmountTextField = new JTextField();
+        ((AbstractDocument)targetAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
         JComboBox targetCurrencyComboBox = new JComboBox();
         JPanel currencyRatePanel = new JPanel();
         JLabel sourceCurrencyLabel = new JLabel();
