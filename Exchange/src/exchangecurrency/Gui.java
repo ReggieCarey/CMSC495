@@ -62,11 +62,13 @@ public class Gui extends JFrame {
 
         JPanel mainPanel = new JPanel();
         JPanel dataEntryPanel = new JPanel();
+        DocumentFilter standardNumericFilter = new NonNumericFilter(2);
+        DocumentFilter nonDecimalNumericFilter = new NonNumericFilter(0);
         JTextField sourceAmountTextField = new JTextField();
+        ((AbstractDocument)sourceAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
         JComboBox sourceCurrencyComboBox = new JComboBox();
         JTextField targetAmountTextField = new JTextField();
-        DocumentFilter numberfilter = new NonNumericFilter();
-        ((AbstractDocument)sourceAmountTextField.getDocument()).setDocumentFilter(numberfilter);
+        ((AbstractDocument)targetAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
         JComboBox targetCurrencyComboBox = new JComboBox();
         JPanel currencyRatePanel = new JPanel();
         JLabel sourceCurrencyLabel = new JLabel();
@@ -484,6 +486,12 @@ class Model {
 }
 
 class NonNumericFilter extends DocumentFilter {
+    private int decimals = 2;
+    
+    public NonNumericFilter(int x)
+    {
+        decimals = x;
+    }
 
 @Override
 public void insertString(DocumentFilter.FilterBypass fb, int offs,
@@ -491,7 +499,7 @@ String str, AttributeSet a) throws BadLocationException {
                 String text = fb.getDocument().getText(0,
                         fb.getDocument().getLength());
                 text += str;
-                if (text.matches("^[0-9]+[.]?[0-9]{0,2}$")) {
+                if (text.matches("^[0-9]+[.]?[0-9]{0,"+ decimals + "}$")) {
                     super.insertString(fb, offs, str, a);
                 } else {
                 }
@@ -505,7 +513,7 @@ String str, AttributeSet a) throws BadLocationException {
                 String text = fb.getDocument().getText(0,
                         fb.getDocument().getLength());
                 text += str;
-                if (text.matches("^[0-9]+[.]?[0-9]{0,2}$")) {
+                if (text.matches("^[0-9]+[.]?[0-9]{0,"+ decimals + "}$")) {
                     super.insertString(fb, offs, str, a);
                 } else {
                 }
