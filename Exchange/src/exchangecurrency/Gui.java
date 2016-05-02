@@ -102,7 +102,11 @@ public class Gui extends JFrame {
                     String code = model.getSourceCurrencyCode();
                     sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", 1.0, model.getNameForCode(code), model.getLastUpdatedDate()));
                     try {
-                        sourceAmountTextField.setText(String.format("%.2f", amount));
+                        if (code != null && model.getDecimalUsage(code)) {
+                            sourceAmountTextField.setText(String.format("%.2f", amount));
+                        } else {
+                            sourceAmountTextField.setText(String.format("%.0f", amount));
+                        }
                     } catch (IllegalStateException ex) {
                     }
                     break;
@@ -112,7 +116,11 @@ public class Gui extends JFrame {
                     String code = model.getTargetCurrencyCode();
                     targetCurrencyLabel.setText(String.format("%.4f %s", model.getRate(), model.getNameForCode(code)));
                     try {
-                        targetAmountTextField.setText(String.format("%.2f", amount));
+                        if (code != null && model.getDecimalUsage(code)) {
+                            targetAmountTextField.setText(String.format("%.2f", amount));
+                        } else {
+                            targetAmountTextField.setText(String.format("%.0f", amount));
+                        }
                     } catch (IllegalStateException ex) {
                     }
                     break;
