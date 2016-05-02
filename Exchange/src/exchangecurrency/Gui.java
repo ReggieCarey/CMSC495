@@ -44,6 +44,10 @@ import javax.swing.text.DocumentFilter;
     Class      : GUI
     Created on : May 1, 2016
     Author     : Reginald Carey
+     
+    Changes
+    Added Class NonNumericFilter, Kibler, May 1 2016
+    Revised initComponents for filter, Kibler, May 1 2016
  */
 public class Gui extends JFrame {
 
