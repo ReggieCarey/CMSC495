@@ -45,7 +45,7 @@ public class ExchangeRateDB {
         } else {
             try {
                 conn.createStatement().execute("DROP TABLE exchange");
-                conn.createStatement().execute("create table exchange(code VARCHAR(4), rate DOUBLE, date VARCHAR(11))");
+                conn.createStatement().execute("create table exchange(code VARCHAR(4), rate DOUBLE, date VARCHAR(11), decimalUsage BOOLEAN)");
                 System.out.println("table created.");
             } catch (Exception e) {
 
@@ -56,12 +56,13 @@ public class ExchangeRateDB {
             for (Currency currentPull1 : currentPull) {
                 try {
                     PreparedStatement ps = conn.prepareStatement("INSERT INTO exchange"
-                            + "(CODE, RATE, DATE) VALUES "
-                            + "(?, ?, ?)");
+                            + "(code, rate, date, decimalUsage) VALUES "
+                            + "(?, ?, ?, ?)");
                     Currency tempCurrency = currentPull1;
                     ps.setString(1, tempCurrency.getCode());
                     ps.setDouble(2, tempCurrency.getRate());
                     ps.setString(3, dateFormat.format(currentDate));
+                    ps.setBoolean(4, tempCurrency.getDecimalUsage());
                     ps.executeUpdate();
                     System.out.println("row add " + tempCurrency.getCode());
                 } catch (Exception e) {
@@ -126,6 +127,33 @@ public class ExchangeRateDB {
         return codes;
     }
 
+    public Boolean getDecimalUsage(String code) {
+        Connection conn = getConnection();
+        Boolean decimalUsage = null;
+
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT decimalUsage FROM exchange WHERE code = '" + code + "'");
+
+            ResultSet results;
+            results = ps.executeQuery();
+
+            while (results.next()) {
+                decimalUsage = results.getBoolean("decimalUsage");
+            }
+        } catch (Exception e) {
+            java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, null, e);
+        } finally {
+            try {
+                if (!conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+
+            }
+        }
+
+        return decimalUsage;
+    }
     /*
      Getter that returns a rate based upon a currency code provided.
      */
