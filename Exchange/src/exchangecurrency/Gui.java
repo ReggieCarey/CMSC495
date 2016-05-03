@@ -11,7 +11,6 @@ import static exchangecurrency.Model.PROP_SOURCECURRENCYCODE;
 import static exchangecurrency.Model.PROP_TARGETAMOUNT;
 import static exchangecurrency.Model.PROP_TARGETCURRENCYCODE;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
@@ -39,15 +38,11 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 /**
-    University of Maryland: University College
-    CMSC495 Group 2
-    Class      : GUI
-    Created on : May 1, 2016
-    Author     : Reginald Carey
-     
-    Changes
-    Added Class NonNumericFilter, Kibler, May 1 2016
-    Revised initComponents for filter, Kibler, May 1 2016
+ * University of Maryland: University College CMSC495 Group 2 Class : GUI
+ * Created on : May 1, 2016 Author : Reginald Carey
+ *
+ * Changes Added Class NonNumericFilter, Kibler, May 1 2016 Revised
+ * initComponents for filter, Kibler, May 1 2016
  */
 public class Gui extends JFrame {
 
@@ -72,10 +67,10 @@ public class Gui extends JFrame {
         DocumentFilter standardNumericFilter = new NonNumericFilter(2);
         DocumentFilter nonDecimalNumericFilter = new NonNumericFilter(0);
         JTextField sourceAmountTextField = new JTextField();
-        ((AbstractDocument)sourceAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
+        ((AbstractDocument) sourceAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
         JComboBox sourceCurrencyComboBox = new JComboBox();
         JTextField targetAmountTextField = new JTextField();
-        ((AbstractDocument)targetAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
+        ((AbstractDocument) targetAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
         JComboBox targetCurrencyComboBox = new JComboBox();
         JPanel currencyRatePanel = new JPanel();
         JLabel sourceCurrencyLabel = new JLabel();
@@ -98,12 +93,26 @@ public class Gui extends JFrame {
                 }
                 case PROP_SOURCECURRENCYCODE: {
                     sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", 1.0, model.getNameForCode((String) evt.getNewValue()), model.getLastUpdatedDate()));
-                    sourceCurrencyComboBox.setSelectedItem(evt.getNewValue());
+                    String code = (String) evt.getNewValue();
+                    sourceCurrencyComboBox.setSelectedItem(code);
+                    if (model.getDecimalUsage(code)) {
+                        ((AbstractDocument) sourceAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
+                        sourceAmountTextField.setText(String.format("%.2f", model.getSourceAmount()));
+                    } else {
+                        ((AbstractDocument) sourceAmountTextField.getDocument()).setDocumentFilter(nonDecimalNumericFilter);
+                        sourceAmountTextField.setText(String.format("%.0f", model.getSourceAmount()));
+                    }
                     break;
                 }
                 case PROP_TARGETCURRENCYCODE: {
                     targetCurrencyLabel.setText(String.format("%.4f %s", model.getRate(), model.getNameForCode((String) evt.getNewValue())));
-                    targetCurrencyComboBox.setSelectedItem(evt.getNewValue());
+                    String code = (String) evt.getNewValue();
+                    targetCurrencyComboBox.setSelectedItem(code);
+                    if (model.getDecimalUsage(code)) {
+                        ((AbstractDocument) targetAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
+                    } else {
+                        ((AbstractDocument) targetAmountTextField.getDocument()).setDocumentFilter(nonDecimalNumericFilter);
+                    }
                     break;
                 }
                 case PROP_SOURCEAMOUNT: {
@@ -111,7 +120,7 @@ public class Gui extends JFrame {
                     String code = model.getSourceCurrencyCode();
                     sourceCurrencyLabel.setText(String.format("%.2f %s (as of %s) equals", 1.0, model.getNameForCode(code), model.getLastUpdatedDate()));
                     try {
-                        if (code != null && model.getDecimalUsage(code)) {
+                        if (code == null || model.getDecimalUsage(code)) {
                             sourceAmountTextField.setText(String.format("%.2f", amount));
                         } else {
                             sourceAmountTextField.setText(String.format("%.0f", amount));
@@ -125,7 +134,7 @@ public class Gui extends JFrame {
                     String code = model.getTargetCurrencyCode();
                     targetCurrencyLabel.setText(String.format("%.4f %s", model.getRate(), model.getNameForCode(code)));
                     try {
-                        if (code != null && model.getDecimalUsage(code)) {
+                        if (code == null || model.getDecimalUsage(code)) {
                             targetAmountTextField.setText(String.format("%.2f", amount));
                         } else {
                             targetAmountTextField.setText(String.format("%.0f", amount));
@@ -224,12 +233,12 @@ public class Gui extends JFrame {
                 .addGroup(dataEntryPanelLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                .addComponent(sourceAmountTextField, GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                                .addComponent(sourceAmountTextField, GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
                                 .addComponent(targetAmountTextField))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(sourceCurrencyComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(targetCurrencyComboBox, 0, 158, Short.MAX_VALUE))
+                                .addComponent(targetCurrencyComboBox, 0, 180, Short.MAX_VALUE))
                         .addContainerGap())
         );
         dataEntryPanelLayout.setVerticalGroup(dataEntryPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -271,15 +280,14 @@ public class Gui extends JFrame {
                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        GroupLayout historicalGraphPanelLayout = new GroupLayout(historicalGraphPanel);
-        historicalGraphPanel.setLayout(historicalGraphPanelLayout);
-        historicalGraphPanelLayout.setHorizontalGroup(historicalGraphPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 275, Short.MAX_VALUE)
-        );
-        historicalGraphPanelLayout.setVerticalGroup(historicalGraphPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-        );
-
+//        GroupLayout historicalGraphPanelLayout = new GroupLayout(historicalGraphPanel);
+//        historicalGraphPanel.setLayout(historicalGraphPanelLayout);
+//        historicalGraphPanelLayout.setHorizontalGroup(historicalGraphPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//                .addGap(0, 360, Short.MAX_VALUE)
+//        );
+//        historicalGraphPanelLayout.setVerticalGroup(historicalGraphPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+//                .addGap(0, 0, Short.MAX_VALUE)
+//        );
         GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -319,7 +327,7 @@ public class Gui extends JFrame {
                         .addContainerGap())
         );
 
-        setSize(new Dimension(652, 223));
+        pack();
         setLocationRelativeTo(null);
         //</editor-fold>
     }
@@ -495,37 +503,34 @@ class Model {
 class NonNumericFilter extends DocumentFilter {
 
     private int decimals = 0;
-    Pattern pattern; 
+    Pattern pattern;
     Matcher match;
 
     public NonNumericFilter(int x) {
         decimals = x;
-        pattern = Pattern.compile("^[0-9]+[.]?[0-9]{0," + decimals + "}$");
+        pattern = decimals != 0
+                ? Pattern.compile("^[0-9]+[.]?[0-9]{0," + decimals + "}$")
+                : Pattern.compile("^[0-9]+$");
     }
 
     @Override
     public void insertString(DocumentFilter.FilterBypass fb, int offs,
             String str, AttributeSet a) throws BadLocationException {
         String text = fb.getDocument().getText(0, fb.getDocument().getLength());
-        if (str.contains(".") && text.contains(".")) {
-            text = "";
-        }
-        match = pattern.matcher(text + str);
+        String newString = text.substring(0, offs) + str + text.substring(Math.min(text.length(), offs), text.length());
+        match = pattern.matcher(newString);
         if (match.matches()) {
             super.insertString(fb, offs, str, a);
         } else {
         }
     }
 
-
     @Override
     public void replace(DocumentFilter.FilterBypass fb, int offs, int length,
             String str, AttributeSet a) throws BadLocationException {
         String text = fb.getDocument().getText(0, fb.getDocument().getLength());
-        if (str.contains(".") && text.contains(".")) {
-            text = "";
-        }
-        match = pattern.matcher(text + str);
+        String newString = text.substring(0, offs) + str + text.substring(Math.min(text.length(), offs + length), text.length());
+        match = pattern.matcher(newString);
         if (match.matches()) {
             fb.replace(offs, length, str, a);
         } else {
