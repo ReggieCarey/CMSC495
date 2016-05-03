@@ -14,9 +14,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * University of Maryland: University College CMSC495 Group 2 Class :
- * ExchangeCurrencyDB Created on : Apr 23, 2016 Author : Brandon Trexler
- *
+ * University of Maryland: University College
+ * CMSC495 Group 2
+ * Class      : ExchangeRateDB
+ * Created on : Apr 23, 2016
+ * Author     : Brandon Trexler
  */
 public class ExchangeRateDB {
 
@@ -156,6 +158,7 @@ public class ExchangeRateDB {
 
         return decimalUsage;
     }
+
     /*
      Getter that returns a rate based upon a currency code provided.
      */

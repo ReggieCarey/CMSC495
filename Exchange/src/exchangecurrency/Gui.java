@@ -46,6 +46,7 @@ import javax.swing.text.DocumentFilter;
  */
 public class Gui extends JFrame {
 
+    private static final long serialVersionUID = 0xCAFEBABE;
     private final Model model = new Model();
 
     private Gui() {
@@ -59,6 +60,7 @@ public class Gui extends JFrame {
         model.initModel();
     }
 
+    @SuppressWarnings("unchecked")
     private void initComponents() {
         //<editor-fold defaultstate="collapsed" desc=" Setup the GUI ">
 
@@ -68,10 +70,10 @@ public class Gui extends JFrame {
         DocumentFilter nonDecimalNumericFilter = new NonNumericFilter(0);
         JTextField sourceAmountTextField = new JTextField();
         ((AbstractDocument) sourceAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
-        JComboBox sourceCurrencyComboBox = new JComboBox();
+        JComboBox<String> sourceCurrencyComboBox = new JComboBox<>();
         JTextField targetAmountTextField = new JTextField();
         ((AbstractDocument) targetAmountTextField.getDocument()).setDocumentFilter(standardNumericFilter);
-        JComboBox targetCurrencyComboBox = new JComboBox();
+        JComboBox<String> targetCurrencyComboBox = new JComboBox<>();
         JPanel currencyRatePanel = new JPanel();
         JLabel sourceCurrencyLabel = new JLabel();
         JLabel targetCurrencyLabel = new JLabel();
@@ -83,8 +85,8 @@ public class Gui extends JFrame {
                     List<String> currencyCodeList = (List<String>) evt.getNewValue();
                     Collections.sort(currencyCodeList);
                     String[] currencyCodes = currencyCodeList.toArray(new String[currencyCodeList.size()]);
-                    DefaultComboBoxModel sourceComboBoxModel = new DefaultComboBoxModel(currencyCodes);
-                    DefaultComboBoxModel targetComboBoxModel = new DefaultComboBoxModel(currencyCodes);
+                    DefaultComboBoxModel<String> sourceComboBoxModel = new DefaultComboBoxModel<>(currencyCodes);
+                    DefaultComboBoxModel<String> targetComboBoxModel = new DefaultComboBoxModel<>(currencyCodes);
                     sourceCurrencyComboBox.setModel(sourceComboBoxModel);
                     targetCurrencyComboBox.setModel(targetComboBoxModel);
                     model.setSourceCurrencyCode((String) sourceCurrencyComboBox.getSelectedItem());
@@ -182,7 +184,7 @@ public class Gui extends JFrame {
         });
 
         sourceCurrencyComboBox.setFont(dataEntryPanel.getFont());
-        sourceCurrencyComboBox.setModel(new DefaultComboBoxModel(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
+        sourceCurrencyComboBox.setModel(new DefaultComboBoxModel<>(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
         sourceCurrencyComboBox.addItemListener((ItemEvent evt) -> {
             if (evt.getStateChange() == ItemEvent.SELECTED) {
                 model.setSourceCurrencyCode((String) evt.getItem());
@@ -220,7 +222,7 @@ public class Gui extends JFrame {
         });
 
         targetCurrencyComboBox.setFont(dataEntryPanel.getFont());
-        targetCurrencyComboBox.setModel(new DefaultComboBoxModel(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
+        targetCurrencyComboBox.setModel(new DefaultComboBoxModel<>(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
         targetCurrencyComboBox.addItemListener((ItemEvent evt) -> {
             if (evt.getStateChange() == ItemEvent.SELECTED) {
                 model.setTargetCurrencyCode((String) evt.getItem());

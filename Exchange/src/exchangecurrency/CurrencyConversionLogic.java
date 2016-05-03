@@ -54,7 +54,7 @@ public class CurrencyConversionLogic {
     public Boolean getDecimalUsage(String currencyCode) {
         return dbService.getDecimalUsage(currencyCode);
     }
-    
+
     public String getLastUpdatedDate(String sourceCurrencyCode) {
         return dbService.getUpdatedTime(sourceCurrencyCode);
     }
