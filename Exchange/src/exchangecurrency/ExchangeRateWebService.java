@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.JOptionPane;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -50,6 +51,7 @@ public class ExchangeRateWebService {
                 returnRates.add(new Currency(code, rate, new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date())));
             }
         } catch (IOException | ParseException e) {
+            JOptionPane.showMessageDialog(null, "Problem encountered refreshing data from the internet", "Data Feed Problem", JOptionPane.WARNING_MESSAGE);
             return null;
         }
         return returnRates;
