@@ -24,7 +24,7 @@ public class ExchangeRateDB {
 
     public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     public static final String JDBC_URL = "jdbc:derby:exchangedb;create=true";
-    public DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public DateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy h:m a");
     public Date currentDate = new Date();
 
     //This method updates the exchange table in derby.
@@ -51,7 +51,7 @@ public class ExchangeRateDB {
             } catch (Exception e) {
             }
             try {
-                conn.createStatement().execute("create table exchange(code VARCHAR(4), rate DOUBLE, date VARCHAR(11), decimalUsage BOOLEAN)");
+                conn.createStatement().execute("create table exchange(code VARCHAR(4), rate DOUBLE, date VARCHAR(30), decimalUsage BOOLEAN)");
                 System.out.println("table created.");
             } catch (Exception e) {
                 java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, null, e);
