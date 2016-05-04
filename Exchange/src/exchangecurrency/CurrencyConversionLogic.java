@@ -5,7 +5,12 @@
  */
 package exchangecurrency;
 
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * University of Maryland: University College
@@ -59,4 +64,17 @@ public class CurrencyConversionLogic {
         return dbService.getUpdatedTime(sourceCurrencyCode);
     }
 
+    public Boolean isDateOld(String dateString) {
+        try {
+            Date date = dbService.dateFormat.parse(dateString);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            Calendar now = Calendar.getInstance();
+            now.add(Calendar.DAY_OF_MONTH, -1);
+            return cal.before(now);
+        } catch (ParseException ex) {
+            Logger.getLogger(CurrencyConversionLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 }
