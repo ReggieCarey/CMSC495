@@ -77,7 +77,7 @@ public class Gui extends JFrame {
         JPanel currencyRatePanel = new JPanel();
         JLabel sourceCurrencyLabel = new JLabel();
         JLabel targetCurrencyLabel = new JLabel();
-        JPanel historicalGraphPanel = new JPanel();
+        JLabel attributionLabel = new JLabel();
 
         model.addPropertyChangeListener((PropertyChangeEvent evt) -> {
             switch (evt.getPropertyName()) {
@@ -263,6 +263,8 @@ public class Gui extends JFrame {
         targetCurrencyLabel.setFont(new Font("Lucida Grande", 0, 36)); // NOI18N
         targetCurrencyLabel.setText("targetCurrencyLabel");
 
+        attributionLabel.setText("Powered by Yahoo Finance");
+
         GroupLayout currencyRatePanelLayout = new GroupLayout(currencyRatePanel);
         currencyRatePanel.setLayout(currencyRatePanelLayout);
         currencyRatePanelLayout.setHorizontalGroup(currencyRatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -270,7 +272,9 @@ public class Gui extends JFrame {
                         .addContainerGap()
                         .addGroup(currencyRatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(targetCurrencyLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(sourceCurrencyLabel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(sourceCurrencyLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(attributionLabel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        )
                         .addContainerGap())
         );
         currencyRatePanelLayout.setVerticalGroup(currencyRatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -279,17 +283,11 @@ public class Gui extends JFrame {
                         .addComponent(sourceCurrencyLabel)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(targetCurrencyLabel)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(attributionLabel)
                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-//        GroupLayout historicalGraphPanelLayout = new GroupLayout(historicalGraphPanel);
-//        historicalGraphPanel.setLayout(historicalGraphPanelLayout);
-//        historicalGraphPanelLayout.setHorizontalGroup(historicalGraphPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-//                .addGap(0, 360, Short.MAX_VALUE)
-//        );
-//        historicalGraphPanelLayout.setVerticalGroup(historicalGraphPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-//                .addGap(0, 0, Short.MAX_VALUE)
-//        );
         GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -299,8 +297,8 @@ public class Gui extends JFrame {
                                 .addComponent(currencyRatePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(mainPanelLayout.createSequentialGroup()
                                         .addComponent(dataEntryPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(historicalGraphPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)))
+//                                        .addComponent(historicalGraphPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -309,8 +307,8 @@ public class Gui extends JFrame {
                         .addComponent(currencyRatePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                .addComponent(dataEntryPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(historicalGraphPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(dataEntryPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+//                                .addComponent(historicalGraphPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
