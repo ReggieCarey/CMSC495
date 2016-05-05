@@ -26,6 +26,7 @@ import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
@@ -56,9 +57,18 @@ public class Gui extends JFrame {
     }
 
     public final void init() {
-        CurrencyConversionLogic logic = new CurrencyConversionLogic();
-        model.setCurrencyConversionLogic(logic);
-        model.initModel();
+        try {
+            CurrencyConversionLogic logic = new CurrencyConversionLogic();
+            model.setCurrencyConversionLogic(logic);
+            model.initModel();
+        } catch (Exception e) {
+            String[] msg = {
+                "ERROR: Could not start application. Is it already running?",
+                "PROGRAM WILL EXIT"
+            };
+            JOptionPane.showMessageDialog(null, msg, "STARTUP FAILURE", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -137,7 +147,15 @@ public class Gui extends JFrame {
                 case PROP_TARGETAMOUNT: {
                     Double amount = (Double) evt.getNewValue();
                     String code = model.getTargetCurrencyCode();
-                    targetCurrencyLabel.setText(String.format("%.4f %s", model.getRate(), model.getNameForCode(code)));
+                    String additionalMessage;
+                    if (model.isDateOld()) {
+                        targetCurrencyLabel.setForeground(Color.red);
+                        additionalMessage = "<span style='font-size:12px;'> Rate is older than 1 day</span>";
+                    } else {
+                        targetCurrencyLabel.setForeground(Color.black);
+                        additionalMessage = "";
+                    }
+                    targetCurrencyLabel.setText(String.format("<html>%.4f %s%s</html>", model.getRate(), model.getNameForCode(code), additionalMessage));
                     try {
                         if (code == null || model.getDecimalUsage(code)) {
                             targetAmountTextField.setText(String.format("%.2f", amount));
@@ -390,6 +408,10 @@ class Model {
         setCurrencyCodes(logic.getCurrencyCodes());
         setSourceCurrencyCode("USD");
         setTargetCurrencyCode("EUR");
+    }
+
+    public Boolean isDateOld() {
+        return logic.isDateOld(logic.getLastUpdatedDate(sourceCurrencyCode));
     }
 
     public String getNameForCode(String code) {
