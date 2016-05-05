@@ -24,7 +24,7 @@ public class ExchangeRateDB {
 
     public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     public static final String JDBC_URL = "jdbc:derby:exchangedb;create=true";
-    public DateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy h:m a");
+    public DateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy h:mm a");
     public Date currentDate = new Date();
 
     //This method updates the exchange table in derby.
