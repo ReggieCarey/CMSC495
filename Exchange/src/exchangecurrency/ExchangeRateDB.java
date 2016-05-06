@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  * University of Maryland: University College
@@ -38,8 +39,21 @@ public class ExchangeRateDB {
          */
         if (currentPull == null) {
 
-            java.util.logging.Logger.getLogger(ExchangeRateDB.class.getName()).log(java.util.logging.Level.WARNING, "No internet Connection, cannot update rates.");
+            try {
+                PreparedStatement prep = conn.prepareStatement("SELECT * FROM exchange");
+                ResultSet res;
 
+                res = prep.executeQuery();
+
+                while (res.next()) {
+                }
+
+            } catch (Exception e) {
+
+                JOptionPane.showMessageDialog(null, new String[]{"Database is not populated","Program will Exit","Try again when the internet is available"}, "Severe Error Condition", JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+
+            }
             /*
              This else statement executes if there is an internet connection dropping the current table
              and recreating the new one.
