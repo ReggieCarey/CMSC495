@@ -34,8 +34,8 @@ public class ExchangeRateWebService {
         try {
             URL openURL = new URL(baseUrl);
             URLConnection urlConnect = openURL.openConnection();
-            urlConnect.setConnectTimeout(500);
-            urlConnect.setReadTimeout(500);
+            urlConnect.setConnectTimeout(750);
+            urlConnect.setReadTimeout(750);
             BufferedReader inReader = new BufferedReader(new InputStreamReader(urlConnect.getInputStream()));
 
             JSONObject jobj = (JSONObject) jparse.parse(inReader);
