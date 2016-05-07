@@ -14,6 +14,8 @@ import java.util.List;
  * Class      : ExchangeCurrencyDB
  * Created on : Apr 23, 2016
  * Author     : Brandon Trexler
+ * 
+ * Revision:  Added noDecimal functions 01 May 16 - Robert Kibler
  */
 public class Currency {
 
